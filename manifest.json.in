@@ -1,0 +1,15 @@
+{
+    "name": "photosphere2.mymike00",
+    "description": "Spherical viewer for equirectangular pictures, also known as Photo Spheres, or 360 pictures, for Ubuntu Touch",
+    "architecture": "@CLICK_ARCH@",
+    "title": "PhotoSphere 2",
+    "hooks": {
+        "photosphere2": {
+            "apparmor": "photosphere2.apparmor",
+            "desktop":  "photosphere2.desktop"
+        }
+    },
+    "version": "1.0.0",
+    "maintainer": "Michele Castellazzi <miguel2000@livecom.it>",
+    "framework" : "ubuntu-sdk-16.04"
+}
