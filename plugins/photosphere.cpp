@@ -57,7 +57,6 @@ void PhotoSphere::sync()
         connect(window(), &QQuickWindow::beforeRendering, m_renderer, &PhotoSphereRenderer::paint, Qt::DirectConnection);
     }
     m_renderer->setViewportSize(window()->size() * window()->devicePixelRatio());
-    m_renderer->setT(m_t);
     m_renderer->setImage(m_image);
     m_renderer->setWindow(window());
 }
