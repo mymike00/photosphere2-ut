@@ -46,8 +46,6 @@ PhotoSphereRenderer::~PhotoSphereRenderer()
 {
     delete m_program;
     delete m_vao;
-    m_vbo->destroy();
-    delete m_vbo;
 }
 
 void PhotoSphere::sync()
@@ -141,7 +139,7 @@ void PhotoSphereRenderer::paint()
 
     QQuaternion quat = QQuaternion();
     QMatrix4x4 temp1 = QMatrix4x4(quat.toRotationMatrix());
-    QMatrix4x4 transform = temp1;
+    QMatrix4x4 transformMatrix = temp1;
     // transform needs to be an exact QMatrix3x3. A QMatrix4x4 won't work
     m_program->setUniformValue("transform", quat.toRotationMatrix());
 
@@ -165,7 +163,7 @@ void PhotoSphereRenderer::paint()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     QImage *img = new QImage(m_image);
-    QOpenGLTexture *texture = new QOpenGLTexture(img->mirrored(true, false));
+    QOpenGLTexture *texture = new QOpenGLTexture(img->mirrored(false, false));
     texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
     texture->setMagnificationFilter(QOpenGLTexture::Linear);
     texture->bind();

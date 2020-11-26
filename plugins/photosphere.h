@@ -27,7 +27,6 @@ private:
     QString m_image;
     QOpenGLShaderProgram *m_program;
     QOpenGLVertexArrayObject *m_vao;
-    QOpenGLBuffer *m_vbo;
     QQuickWindow *m_window;
 };
 
