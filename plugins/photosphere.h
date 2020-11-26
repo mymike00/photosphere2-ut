@@ -11,7 +11,7 @@ class PhotoSphereRenderer : public QObject, protected QOpenGLFunctions
 {
     Q_OBJECT
 public:
-    PhotoSphereRenderer() : m_t(0), m_program(0) , m_vao(0) { }
+    PhotoSphereRenderer() : m_t(0), m_program(0) { }
     ~PhotoSphereRenderer();
 
     void setImage(QString image) { m_image = image; }
@@ -26,7 +26,6 @@ private:
     qreal m_t;
     QString m_image;
     QOpenGLShaderProgram *m_program;
-    QOpenGLVertexArrayObject *m_vao;
     QQuickWindow *m_window;
 };
 
@@ -37,7 +36,6 @@ class PhotoSphere : public QQuickItem
 
 public:
     PhotoSphere();
-    
     QString image() const { return m_image; }
     void setImage(QString image);
 

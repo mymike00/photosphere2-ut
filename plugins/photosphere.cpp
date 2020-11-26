@@ -45,7 +45,6 @@ void PhotoSphere::cleanup()
 PhotoSphereRenderer::~PhotoSphereRenderer()
 {
     delete m_program;
-    delete m_vao;
 }
 
 void PhotoSphere::sync()
@@ -61,11 +60,6 @@ void PhotoSphere::sync()
 
 void PhotoSphereRenderer::paint()
 {
-
-    if (!m_vao) {
-        m_vao = new QOpenGLVertexArrayObject;
-        m_vao->create();
-    }
     if (!m_program) {
         initializeOpenGLFunctions();
 
@@ -116,7 +110,6 @@ void PhotoSphereRenderer::paint()
 
     }
     m_program->bind();
-    m_vao->bind();
 
     m_program->enableAttributeArray(0);
     m_program->setUniformValue("texture", 0);
@@ -182,7 +175,6 @@ void PhotoSphereRenderer::paint()
 
     m_program->disableAttributeArray(0);
     m_program->disableAttributeArray(1);
-    m_vao->release();
     m_program->release();
     texture->release(0);
 
