@@ -109,9 +109,6 @@ void PhotoSphereRenderer::paint()
     }
     m_program->bind();
 
-    m_program->enableAttributeArray(0);
-    m_program->setUniformValue("texture", 0);
-
     float values[] = {
         +1., +1.,
         -1., +1.,
@@ -126,9 +123,6 @@ void PhotoSphereRenderer::paint()
     };
 
     if (m_program->isLinked()) {
-        // m_program->setAttributeArray(0, GL_FLOAT, values, 2);
-        // m_program->setUniformValue("t", (float) 0);
-
         m_program->setUniformValue("texture", 0);
 
         QMatrix4x4 projection = QMatrix4x4();
