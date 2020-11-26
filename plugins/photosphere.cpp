@@ -133,26 +133,33 @@ void PhotoSphereRenderer::paint()
             2.0f, 2.0f,
             0.0f, 2.0f
     };
-    QMatrix4x4 projection = QMatrix4x4();
-    projection.ortho(0, 1, 1, 0, -1, 1);
-    m_program->setUniformValue("projection", projection);
 
-    QQuaternion quat = QQuaternion();
-    QMatrix4x4 temp1 = QMatrix4x4(quat.toRotationMatrix());
-    QMatrix4x4 transformMatrix = temp1;
-    // transform needs to be an exact QMatrix3x3. A QMatrix4x4 won't work
-    m_program->setUniformValue("transform", quat.toRotationMatrix());
+    if (m_program->isLinked()) {
+        // m_program->setAttributeArray(0, GL_FLOAT, values, 2);
+        // m_program->setUniformValue("t", (float) 0);
 
-    // force cast to float is needed for the GLSL shaders
-    m_program->setUniformValue("aspect", (float) m_viewportSize.height() / m_viewportSize.width());
-    m_program->setUniformValue("scale", (float) 5);
+        m_program->setUniformValue("texture", 0);
 
-    m_program->setAttributeArray(0, GL_FLOAT, values, 2);
-    m_program->setAttributeArray(1, GL_FLOAT, texCoords, 2);
+        QMatrix4x4 projection = QMatrix4x4();
+        projection.ortho(0, 1, 1, 0, -1, 1);
+        m_program->setUniformValue("projection", projection);
+
+        QQuaternion quat = QQuaternion();
+        QMatrix4x4 temp1 = QMatrix4x4(quat.toRotationMatrix());
+        QMatrix4x4 transformMatrix = temp1;
+        // transform needs to be an exact QMatrix3x3. A QMatrix4x4 won't work
+        m_program->setUniformValue("transform", quat.toRotationMatrix());
+
+        // force cast to float is needed for the GLSL shaders
+        m_program->setUniformValue("aspect", (float) m_viewportSize.height() / m_viewportSize.width());
+        m_program->setUniformValue("scale", (float) 5);
+
+        m_program->setAttributeArray(0, GL_FLOAT, values, 2);
+        m_program->setAttributeArray(1, GL_FLOAT, texCoords, 2);
+    }
 
     glViewport(0, 0, m_viewportSize.width(), m_viewportSize.height());
 
-    glEnable( GL_DEPTH_TEST );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
@@ -172,7 +179,6 @@ void PhotoSphereRenderer::paint()
     m_program->enableAttributeArray(1);
 
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-    // glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     m_program->disableAttributeArray(0);
     m_program->disableAttributeArray(1);
