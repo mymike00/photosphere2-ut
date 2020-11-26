@@ -142,11 +142,12 @@ void PhotoSphereRenderer::paint()
     QQuaternion quat = QQuaternion();
     QMatrix4x4 temp1 = QMatrix4x4(quat.toRotationMatrix());
     QMatrix4x4 transform = temp1;
-    m_program->setUniformValue("transform", transform);
+    // transform needs to be an exact QMatrix3x3. A QMatrix4x4 won't work
+    m_program->setUniformValue("transform", quat.toRotationMatrix());
 
-
-    m_program->setUniformValue("aspect", m_viewportSize.height() / m_viewportSize.width());
-    m_program->setUniformValue("scale", 20);
+    // force cast to float is needed for the GLSL shaders
+    m_program->setUniformValue("aspect", (float) m_viewportSize.height() / m_viewportSize.width());
+    m_program->setUniformValue("scale", (float) 5);
 
     m_program->setAttributeArray(0, GL_FLOAT, values, 2);
     m_program->setAttributeArray(1, GL_FLOAT, texCoords, 2);
@@ -164,7 +165,7 @@ void PhotoSphereRenderer::paint()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     QImage *img = new QImage(m_image);
-    QOpenGLTexture *texture = new QOpenGLTexture(img->mirrored());
+    QOpenGLTexture *texture = new QOpenGLTexture(img->mirrored(true, false));
     texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
     texture->setMagnificationFilter(QOpenGLTexture::Linear);
     texture->bind();
