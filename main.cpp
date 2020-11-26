@@ -16,19 +16,22 @@
 
 #include <QGuiApplication>
 #include <QCoreApplication>
-#include <QUrl>
-#include <QString>
 #include <QQuickView>
+#include <QQmlApplicationEngine>
+#include <QtQuickControls2/QQuickStyle>
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication *app = new QGuiApplication(argc, (char**)argv);
+    QGuiApplication *app = new QGuiApplication(argc, argv);
     app->setApplicationName("photosphere2.mymike00");
+    
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QCoreApplication::setApplicationName(QStringLiteral("mymike00.photosphere2"));
 
-    QQuickView *view = new QQuickView();
-    view->setSource(QUrl("qrc:/Main.qml"));
-    view->setResizeMode(QQuickView::SizeRootObjectToView);
-    view->show();
+    QQuickStyle::setStyle("Suru");
+
+    QQmlApplicationEngine *engine = new QQmlApplicationEngine();
+    engine->load(QUrl(QStringLiteral("qrc:/Main.qml")));
 
     return app->exec();
 }

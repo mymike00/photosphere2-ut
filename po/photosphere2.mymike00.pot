@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: photosphere2.mymike00\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-25 13:51+0000\n"
+"POT-Creation-Date: 2020-11-26 12:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Main.qml:39 photosphere2.desktop.in.h:1
+#: photosphere2.desktop.in.h:1
 msgid "PhotoSphere 2"
 msgstr ""
