@@ -36,7 +36,7 @@ ApplicationWindow {
         header: ToolBar {
             Label {
                 text: "PhotoSphere 2"
-                font.pixelSize: 20
+                font.pixelSize: Suru.units.gu(3)
                 elide: Label.ElideRight
                 anchors {
                     verticalCenter: parent.verticalCenter
