@@ -65,39 +65,37 @@ void PhotoSphereRenderer::paint()
 
         m_program = new QOpenGLShaderProgram();
         m_program->addCacheableShaderFromSourceCode(QOpenGLShader::Vertex,
-                                                    "#version 130\n"
-                                                    "uniform mediump mat4   projection;\n"
-                                                    "attribute mediump vec3 position;\n"
-                                                    "attribute mediump vec2 texcoord;\n"
-                                                    "varying mediump vec2 v_texcoord;\n"
+                                                    "uniform highp mat4   projection;\n"
+                                                    "attribute highp vec3 position;\n"
+                                                    "attribute highp vec2 texcoord;\n"
+                                                    "varying highp vec2 v_texcoord;\n"
                                                     "void main() {\n"
                                                     "    v_texcoord = texcoord;\n"
                                                     "    gl_Position = projection * vec4(position, 1.);\n"
                                                     "}\n");
         m_program->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment,
-                                                    "#version 130\n"
                                                     "uniform sampler2D texture;\n"
-                                                    "uniform mediump float scale, aspect;\n"
-                                                    "uniform mediump mat3 transform;\n"
+                                                    "uniform highp float scale, aspect;\n"
+                                                    "uniform highp mat3 transform;\n"
 
-                                                    "varying mediump vec2 v_texcoord;\n"
+                                                    "varying highp vec2 v_texcoord;\n"
 
                                                     "#define PI 3.141592653589793\n"
 
                                                     "void main() {\n"
-                                                    "    vec2 mediump rads = vec2(PI * 2., PI);\n"
+                                                    "    vec2 rads = vec2(PI * 2., PI);\n"
 
-                                                    "    vec2 mediump pnt = (v_texcoord - .5) * vec2(scale, scale * aspect);\n"
+                                                    "    vec2 pnt = (v_texcoord - .5) * vec2(scale, scale * aspect);\n"
 
                                                     "    // Project to Sphere;\n"
-                                                    "    float mediump x2y2 = pnt.x * pnt.x + pnt.y * pnt.y;\n"
-                                                    "    vec3 mediump sphere_pnt = vec3(2. * pnt, x2y2 - 1.) / (x2y2 + 1.);\n"
+                                                    "    float x2y2 = pnt.x * pnt.x + pnt.y * pnt.y;\n"
+                                                    "    vec3 sphere_pnt = vec3(2. * pnt, x2y2 - 1.) / (x2y2 + 1.);\n"
                                                     "    sphere_pnt *= transform;\n"
 
                                                     "    // Convert to Spherical Coordinates\n"
-                                                    "    float mediump r = length(sphere_pnt);\n"
-                                                    "    float mediump lon = atan(sphere_pnt.y, sphere_pnt.x);\n"
-                                                    "    float mediump lat = acos(sphere_pnt.z / r);\n"
+                                                    "    float r = length(sphere_pnt);\n"
+                                                    "    float lon = atan(sphere_pnt.y, sphere_pnt.x);\n"
+                                                    "    float lat = acos(sphere_pnt.z / r);\n"
                                                     // "    gl_FragColor = texture2D(texture, v_texcoord.st);\n"
                                                     "    gl_FragColor = texture2D(texture, vec2(lon, lat) / rads);\n"
                                                     "}\n");
