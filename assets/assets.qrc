@@ -1,10 +1,6 @@
 <RCC>
     <qresource prefix="/assets">
         <file>logo.svg</file>
-        <file>sphere.jpg</file>
-        <file>grid.svg</file>
         <file>grid2.png</file>
-        <file>earth.jpg</file>
-        <file>earth_c.jpg</file>
     </qresource>
 </RCC>
