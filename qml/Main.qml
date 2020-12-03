@@ -51,6 +51,8 @@ ApplicationWindow {
             id: photoSphere
             image: ":/assets/grid2.png"
             scale: 1
+            longitude: 0
+            latitude: 0.5
             onScaleChanged: {
                 scale = Math.min(scale, 10)
                 scale = Math.max(scale, 0.1)
@@ -73,6 +75,16 @@ ApplicationWindow {
             MouseArea {
                 id: ma
                 anchors.fill: parent
+                onPressed: {
+                    photoSphere.startDrag(mouseX, mouseY);
+                }
+                onPositionChanged: {
+                    photoSphere.longitude = mouseX
+                    photoSphere.latitude = mouseY
+                }
+                onReleased: {
+                    photoSphere.endDrag()
+                }
                 onWheel: {
                     photoSphere.scale -= photoSphere.scale * wheel.angleDelta.y / 200 / Suru.units.dp(1)
                 }

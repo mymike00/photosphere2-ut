@@ -4,6 +4,7 @@
 #include <QtGui/QOpenGLShaderProgram>
 #include <QtGui/QOpenGLContext>
 #include <QOpenGLTexture>
+#include <QtMath>
 
 PhotoSphere::PhotoSphere()
     : m_scale(0)
@@ -32,6 +33,29 @@ void PhotoSphere::setScale(qreal scale)
     if (window())
         window()->update();
 }
+
+void PhotoSphere::setLongitude(qreal longitude)
+{
+    if (longitude == m_longitude)
+        return;
+    m_longitude = longitude;
+    emit longitudeChanged();
+    emit scaleChanged();
+    if (window())
+        window()->update();
+}
+
+void PhotoSphere::setLatitude(qreal latitude)
+{
+    if (latitude == m_latitude)
+        return;
+    m_latitude = latitude;
+    emit latitudeChanged();
+    emit scaleChanged();
+    if (window())
+        window()->update();
+}
+
 void PhotoSphere::handleWindowChanged(QQuickWindow *win)
 {
     if (win) {
@@ -65,7 +89,33 @@ void PhotoSphere::sync()
     m_renderer->setViewportSize(window()->size() * window()->devicePixelRatio());
     m_renderer->setImage(m_imageUrl);
     m_renderer->setScale(m_scale);
+    m_renderer->setLongitude(m_longitude);
+    m_renderer->setLatitude(m_latitude);
     m_renderer->setWindow(window());
+}
+
+QVector3D PhotoSphereRenderer::getArcBallVector(int x, int y)
+{
+    QVector3D pt = QVector3D(2.0 * x / m_window->width() - 1.0, 2.0 * y / m_window->height() - 1.0, 0);
+
+    pt.setZ(1);
+    pt.normalize();
+
+    return pt;
+}
+
+void PhotoSphereRenderer::startDrag(int x, int y)
+{
+    m_dragging = true;
+    m_startDragX = x;
+    m_startDragY = y;
+    m_oldTransformMatrix = m_transformMatrix;
+}
+void PhotoSphereRenderer::endDrag()
+{
+    m_dragging = false;
+    m_startDragX = m_longitude;
+    m_startDragY = m_latitude;
 }
 
 void PhotoSphereRenderer::paint()
@@ -143,6 +193,22 @@ void PhotoSphereRenderer::paint()
         QMatrix4x4 projection = QMatrix4x4();
         projection.ortho(0, 1, 1, 0, -1, 1);
         m_program->setUniformValue("projection", projection);
+
+        // ARCBALL
+        if (m_dragging) {
+            QVector3D start_arc_ball = getArcBallVector(m_startDragX, m_startDragY);
+            QVector3D arc_ball = getArcBallVector(m_longitude, m_latitude);
+
+            qreal angle = qAcos(qMin(1.0f, QVector3D::dotProduct(start_arc_ball, arc_ball))) / m_scale;
+
+            QVector3D rotAxis = QVector3D::crossProduct(start_arc_ball, arc_ball);
+            rotAxis.setZ(0);
+
+            QMatrix4x4 tmp;
+            tmp.rotate(qRadiansToDegrees(angle), rotAxis);
+            m_transformMatrix = tmp * m_oldTransformMatrix;
+            // startDrag(m_longitude, m_latitude);
+        }
 
         // transform needs to be an exact QMatrix3x3. A QMatrix4x4 won't work
         m_program->setUniformValue("transform", m_transformMatrix.toGenericMatrix<3, 3>());
