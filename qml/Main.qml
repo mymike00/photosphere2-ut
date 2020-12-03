@@ -17,6 +17,7 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Controls.Suru 2.2
+import Ubuntu.Components 1.3 as UITK
 import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 
@@ -89,6 +90,36 @@ ApplicationWindow {
                     photoSphere.scale -= photoSphere.scale * wheel.angleDelta.y / 200 / Suru.units.dp(1)
                 }
             }
+        }
+        RoundButton {
+            id: rotateRight
+            anchors {
+                bottom: parent.bottom
+                margins: Suru.units.gu(2)
+                left: parent.left
+            }
+            Image {
+                height: Suru.units.gu(4)
+                anchors.centerIn: parent
+                width: height
+                source: "image://theme/rotate-right"
+            }
+            onClicked: photoSphere.rotateView(10)
+        }
+        RoundButton {
+            id: rotateLeft
+            anchors {
+                bottom: parent.bottom
+                margins: Suru.units.gu(2)
+                left: rotateRight.right
+            }
+            Image {
+                height: Suru.units.gu(4)
+                anchors.centerIn: parent
+                width: height
+                source: "image://theme/rotate-left"
+            }
+            onClicked: photoSphere.rotateView(-10)
         }
     }
     function round(num) {

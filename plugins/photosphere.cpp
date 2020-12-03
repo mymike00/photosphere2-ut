@@ -118,6 +118,15 @@ void PhotoSphereRenderer::endDrag()
     m_startDragY = m_latitude;
 }
 
+void PhotoSphereRenderer::rotateView(qreal degrees) {
+    qreal angle = degrees / m_scale;
+
+    QMatrix4x4 tmp;
+    tmp.rotate(angle, QVector3D(0,0,1));
+    m_transformMatrix = tmp * m_transformMatrix;
+    m_oldTransformMatrix = m_transformMatrix;
+}
+
 void PhotoSphereRenderer::paint()
 {
     if (!m_program) {
