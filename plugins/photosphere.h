@@ -32,6 +32,7 @@ public:
     void startDrag(int x, int y);
     void endDrag();
     void rotateView(qreal degrees);
+    void lookBelow();
 
 public slots:
     void paint();
@@ -76,6 +77,7 @@ public:
     Q_INVOKABLE void startDrag(int x, int y) { m_renderer->startDrag(x, y); }
     Q_INVOKABLE void endDrag() { m_renderer->endDrag(); }
     Q_INVOKABLE void rotateView(qreal degrees) { m_renderer->rotateView(degrees); }
+    Q_INVOKABLE void lookBelow() { m_renderer->lookBelow(); }
 
 signals:
     void imageUrlChanged();

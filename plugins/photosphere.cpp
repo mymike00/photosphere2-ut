@@ -126,6 +126,10 @@ void PhotoSphereRenderer::rotateView(qreal degrees) {
     m_transformMatrix = tmp * m_transformMatrix;
     m_oldTransformMatrix = m_transformMatrix;
 }
+void PhotoSphereRenderer::lookBelow()
+{
+    m_transformMatrix = QMatrix4x4();
+}
 
 void PhotoSphereRenderer::paint()
 {

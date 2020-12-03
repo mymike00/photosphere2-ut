@@ -121,6 +121,21 @@ ApplicationWindow {
             }
             onClicked: photoSphere.rotateView(-10)
         }
+        RoundButton {
+            id: lookBelow
+            anchors {
+                top: parent.top
+                margins: Suru.units.gu(2)
+                right: parent.right
+            }
+            Image {
+                height: Suru.units.gu(4)
+                anchors.centerIn: parent
+                width: height
+                source: "image://theme/down"
+            }
+            onClicked: photoSphere.lookBelow()
+        }
     }
     function round(num) {
         return Math.round(num * 10) / 10
