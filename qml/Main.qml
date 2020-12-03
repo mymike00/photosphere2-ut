@@ -33,21 +33,53 @@ ApplicationWindow {
     Page {
         anchors.fill: parent
         background: null
-        header: ToolBar {
-            Label {
-                text: "PhotoSphere 2"
-                font.pixelSize: Suru.units.gu(3)
-                elide: Label.ElideRight
-                anchors {
-                    verticalCenter: parent.verticalCenter
-                    left: parent.left
-                    leftMargin: Suru.units.gu(1)
+        // header: ToolBar {
+        //     id: header
+        //     Label {
+        //         text: "PhotoSphere 2"
+        //         font.pixelSize: Suru.units.gu(3)
+        //         elide: Label.ElideRight
+        //         anchors {
+        //             verticalCenter: parent.verticalCenter
+        //             left: parent.left
+        //             leftMargin: Suru.units.gu(1)
+        //         }
+        //     }
+        // }
+
+        PhotoSphere {
+            id: photoSphere
+            image: ":/assets/grid2.png"
+            scale: 1
+            onScaleChanged: {
+                scale = Math.min(scale, 10)
+                scale = Math.max(scale, 0.1)
+            }
+        }
+        PinchArea {
+            id: pa
+            anchors.fill: parent
+            property var clickedScale
+            property var rotation
+            onPinchStarted: {
+                clickedScale = photoSphere.scale
+            }
+            onPinchUpdated: {
+                photoSphere.scale = pinch.scale * clickedScale
+            }
+            onPinchFinished: {
+                photoSphere.rotateView(rotation)
+            }
+            MouseArea {
+                id: ma
+                anchors.fill: parent
+                onWheel: {
+                    photoSphere.scale -= photoSphere.scale * wheel.angleDelta.y / 200 / Suru.units.dp(1)
                 }
             }
         }
-
-        PhotoSphere {
-            image: ":/assets/grid2.png"
-        }
+    }
+    function round(num) {
+        return Math.round(num * 10) / 10
     }
 }

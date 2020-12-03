@@ -6,23 +6,32 @@
 #include <QOpenGLTexture>
 
 PhotoSphere::PhotoSphere()
-    : m_t(0)
-    , m_image("")
+    : m_scale(0)
+    , m_imageUrl("")
     , m_renderer(0)
 {
     connect(this, &QQuickItem::windowChanged, this, &PhotoSphere::handleWindowChanged);
 }
 
-void PhotoSphere::setImage(QString image)
+void PhotoSphere::setImage(QString imageUrl)
 {
-    if (image == m_image)
+    if (imageUrl == m_imageUrl)
         return;
-    m_image = image;
-    emit imageChanged();
+    m_imageUrl = imageUrl;
+    emit imageUrlChanged();
     if (window())
         window()->update();
 }
 
+void PhotoSphere::setScale(qreal scale)
+{
+    if (scale == m_scale)
+        return;
+    m_scale = scale;
+    emit scaleChanged();
+    if (window())
+        window()->update();
+}
 void PhotoSphere::handleWindowChanged(QQuickWindow *win)
 {
     if (win) {
@@ -54,7 +63,8 @@ void PhotoSphere::sync()
         connect(window(), &QQuickWindow::beforeRendering, m_renderer, &PhotoSphereRenderer::paint, Qt::DirectConnection);
     }
     m_renderer->setViewportSize(window()->size() * window()->devicePixelRatio());
-    m_renderer->setImage(m_image);
+    m_renderer->setImage(m_imageUrl);
+    m_renderer->setScale(m_scale);
     m_renderer->setWindow(window());
 }
 
@@ -85,7 +95,7 @@ void PhotoSphereRenderer::paint()
                                                     "void main() {\n"
                                                     "    vec2 rads = vec2(PI * 2., PI);\n"
 
-                                                    "    vec2 pnt = (v_texcoord - .5) * vec2(scale, scale * aspect);\n"
+                                                    "    vec2 pnt = (v_texcoord - .5) / vec2(scale, scale / aspect);\n"
 
                                                     "    // Project to Sphere;\n"
                                                     "    float x2y2 = pnt.x * pnt.x + pnt.y * pnt.y;\n"
@@ -106,6 +116,11 @@ void PhotoSphereRenderer::paint()
         m_program->setAttributeBuffer(1, GL_FLOAT, 3 * sizeof(GLfloat), 2, 5 * sizeof(GLfloat));
         m_program->link();
 
+        m_image = new QImage(m_imageUrl);
+        m_texture = new QOpenGLTexture(m_image->scaled(QSize(4000, 2000), Qt::KeepAspectRatio));
+        m_texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
+        m_texture->setMagnificationFilter(QOpenGLTexture::Linear);
+        m_texture->setWrapMode(QOpenGLTexture::Repeat);
     }
     m_program->bind();
 
@@ -129,15 +144,12 @@ void PhotoSphereRenderer::paint()
         projection.ortho(0, 1, 1, 0, -1, 1);
         m_program->setUniformValue("projection", projection);
 
-        QQuaternion quat = QQuaternion();
-        QMatrix4x4 temp1 = QMatrix4x4(quat.toRotationMatrix());
-        QMatrix4x4 transformMatrix = temp1;
         // transform needs to be an exact QMatrix3x3. A QMatrix4x4 won't work
-        m_program->setUniformValue("transform", quat.toRotationMatrix());
+        m_program->setUniformValue("transform", m_transformMatrix.toGenericMatrix<3, 3>());
 
         // force cast to float is needed for the GLSL shaders
         m_program->setUniformValue("aspect", (float) m_viewportSize.height() / m_viewportSize.width());
-        m_program->setUniformValue("scale", (float) 5);
+        m_program->setUniformValue("scale", (float) m_scale);
 
         m_program->setAttributeArray(0, GL_FLOAT, values, 2);
         m_program->setAttributeArray(1, GL_FLOAT, texCoords, 2);
@@ -145,8 +157,6 @@ void PhotoSphereRenderer::paint()
 
     glViewport(0, 0, m_viewportSize.width(), m_viewportSize.height());
 
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -154,11 +164,7 @@ void PhotoSphereRenderer::paint()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-    QImage *img = new QImage(m_image);
-    QOpenGLTexture *texture = new QOpenGLTexture(img->mirrored(false, false));
-    texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
-    texture->setMagnificationFilter(QOpenGLTexture::Linear);
-    texture->bind();
+    m_texture->bind();
 
     m_program->enableAttributeArray(0);
     m_program->enableAttributeArray(1);
@@ -168,7 +174,7 @@ void PhotoSphereRenderer::paint()
     m_program->disableAttributeArray(0);
     m_program->disableAttributeArray(1);
     m_program->release();
-    texture->release(0);
+    m_texture->release(0);
 
 
     // Not strictly needed for this example, but generally useful for when

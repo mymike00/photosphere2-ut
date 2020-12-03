@@ -6,15 +6,21 @@
 #include <QtGui/QOpenGLFunctions>
 #include <QtGui/QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
+#include <QOpenGLTexture>
 
 class PhotoSphereRenderer : public QObject, protected QOpenGLFunctions
 {
     Q_OBJECT
 public:
-    PhotoSphereRenderer() : m_t(0), m_program(0) { }
+    PhotoSphereRenderer()
+    : m_scale(0)
+    , m_program(0)
+    , m_image(0)
+    { }
     ~PhotoSphereRenderer();
 
-    void setImage(QString image) { m_image = image; }
+    void setImage(QString imageUrl) { m_imageUrl = imageUrl; }
+    void setScale(qreal scale) { m_scale = scale; }
     void setViewportSize(const QSize &size) { m_viewportSize = size; }
     void setWindow(QQuickWindow *window) { m_window = window; }
 
@@ -23,25 +29,31 @@ public slots:
 
 private:
     QSize m_viewportSize;
-    qreal m_t;
-    QString m_image;
+    QString m_imageUrl;
+    QImage *m_image;
+    QOpenGLTexture *m_texture;
+    qreal m_scale;
     QOpenGLShaderProgram *m_program;
     QQuickWindow *m_window;
+    QMatrix4x4 m_transformMatrix;
 };
 
 class PhotoSphere : public QQuickItem
 {
     Q_OBJECT
-    Q_PROPERTY(QString image READ image WRITE setImage NOTIFY imageChanged)
+    Q_PROPERTY(QString image READ imageUrl WRITE setImage NOTIFY imageUrlChanged)
+    Q_PROPERTY(qreal scale READ scale WRITE setScale NOTIFY scaleChanged)
 
 public:
     PhotoSphere();
-    QString image() const { return m_image; }
-    void setImage(QString image);
+    QString imageUrl() const { return m_imageUrl; }
+    void setImage(QString imageUrl);
+    qreal scale() const { return m_scale; }
+    void setScale(qreal scale);
 
 signals:
-    void tChanged();
-    void imageChanged();
+    void imageUrlChanged();
+    void scaleChanged();
 
 public slots:
     void sync();
@@ -51,8 +63,8 @@ private slots:
     void handleWindowChanged(QQuickWindow *win);
 
 private:
-    qreal m_t;
-    QString m_image;
+    QString m_imageUrl;
+    qreal m_scale;
     PhotoSphereRenderer *m_renderer;
 };
 
