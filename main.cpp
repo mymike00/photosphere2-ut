@@ -19,6 +19,7 @@
 #include <QQuickView>
 #include <QQmlApplicationEngine>
 #include <QtQuickControls2/QQuickStyle>
+#include "plugins/photosphere.h"
 
 int main(int argc, char *argv[])
 {
@@ -26,6 +27,8 @@ int main(int argc, char *argv[])
 
     QGuiApplication *app = new QGuiApplication(argc, argv);
     app->setApplicationName("photosphere2.mymike00");
+
+    qmlRegisterType<PhotoSphere>("PhotoSphere", 1, 0, "PhotoSphere");
 
     QCoreApplication::setApplicationName(QStringLiteral("mymike00.photosphere2"));
 

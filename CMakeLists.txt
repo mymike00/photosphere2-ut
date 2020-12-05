@@ -44,7 +44,7 @@ install(DIRECTORY assets DESTINATION ${DATA_DIR})
 
 qt5_add_resources(QT_RESOURCES qml/qml.qrc)
 qt5_add_resources(QT_RESOURCES assets/assets.qrc)
-add_executable(${PROJECT_NAME} main.cpp ${QT_RESOURCES})
+add_executable(${PROJECT_NAME} main.cpp plugins/photosphere.cpp ${QT_RESOURCES})
 qt5_use_modules(${PROJECT_NAME} Gui Qml Quick QuickControls2)
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
 
@@ -70,7 +70,7 @@ add_custom_target(${DESKTOP_FILE_NAME} ALL
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${DESKTOP_FILE_NAME} DESTINATION ${DATA_DIR})
 
 add_subdirectory(po)
-add_subdirectory(plugins)
+# add_subdirectory(plugins)
 
 # Make source files visible in qtcreator
 file(GLOB_RECURSE PROJECT_SRC_FILES
