@@ -13,9 +13,9 @@ class PhotoSphereRenderer : public QObject, protected QOpenGLFunctions
     Q_OBJECT
 public:
     PhotoSphereRenderer()
-    : m_scale(0)
+    : m_image(0)
+    , m_scale(0)
     , m_program(0)
-    , m_image(0)
     , m_startDragX(0)
     , m_startDragY(0)
     , m_dragging(false)

@@ -7,8 +7,8 @@
 #include <QtMath>
 
 PhotoSphere::PhotoSphere()
-    : m_scale(0)
-    , m_imageUrl("")
+    : m_imageUrl("")
+    , m_scale(0)
     , m_renderer(0)
 {
     connect(this, &QQuickItem::windowChanged, this, &PhotoSphere::handleWindowChanged);
