@@ -22,10 +22,11 @@
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
     QGuiApplication *app = new QGuiApplication(argc, argv);
     app->setApplicationName("photosphere2.mymike00");
-    
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
     QCoreApplication::setApplicationName(QStringLiteral("mymike00.photosphere2"));
 
     QQuickStyle::setStyle("Suru");

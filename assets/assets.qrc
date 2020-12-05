@@ -2,5 +2,8 @@
     <qresource prefix="/assets">
         <file>logo.svg</file>
         <file>grid2.png</file>
+        <file>rotate-right.svg</file>
+        <file>rotate-left.svg</file>
+        <file>go-down.svg</file>
     </qresource>
 </RCC>
