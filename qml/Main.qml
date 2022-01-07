@@ -89,13 +89,15 @@ ApplicationWindow {
                 }
             }
         }
-        RoundButton {
-            id: rotateRight
+        Row {
             anchors {
                 bottom: parent.bottom
                 margins: Suru.units.gu(2)
                 left: parent.left
             }
+            spacing: Units.gu(2)
+            RoundButton {
+                id: rotateRight
             Image {
                 height: Suru.units.gu(4)
                 anchors.centerIn: parent
@@ -106,11 +108,6 @@ ApplicationWindow {
         }
         RoundButton {
             id: rotateLeft
-            anchors {
-                bottom: parent.bottom
-                margins: Suru.units.gu(2)
-                left: rotateRight.right
-            }
             Image {
                 height: Suru.units.gu(4)
                 anchors.centerIn: parent
@@ -120,12 +117,17 @@ ApplicationWindow {
             onClicked: photoSphere.rotateView(-10)
         }
         RoundButton {
+                id: horizon
+                Image {
+                    height: Suru.units.gu(4)
+                    anchors.centerIn: parent
+                    width: height
+                    source: "qrc:/assets/remove.svg"
+                }
+                onClicked: photoSphere.horizonLevel()
+        }
+        RoundButton {
             id: lookBelow
-            anchors {
-                top: parent.top
-                margins: Suru.units.gu(2)
-                right: parent.right
-            }
             Image {
                 height: Suru.units.gu(4)
                 anchors.centerIn: parent

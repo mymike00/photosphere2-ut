@@ -33,6 +33,7 @@ public:
     void endDrag();
     void rotateView(qreal degrees);
     void lookBelow();
+    void horizonLevel();
 
 public slots:
     void paint();
@@ -78,6 +79,7 @@ public:
     Q_INVOKABLE void endDrag() { m_renderer->endDrag(); }
     Q_INVOKABLE void rotateView(qreal degrees) { m_renderer->rotateView(degrees); }
     Q_INVOKABLE void lookBelow() { m_renderer->lookBelow(); }
+    Q_INVOKABLE void horizonLevel() { m_renderer->horizonLevel(); }
 
 signals:
     void imageUrlChanged();

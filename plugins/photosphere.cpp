@@ -130,6 +130,33 @@ void PhotoSphereRenderer::lookBelow()
 {
     m_transformMatrix = QMatrix4x4();
 }
+void PhotoSphereRenderer::horizonLevel()
+{
+    // Init Matrix and look down
+    QMatrix4x4 tmp;
+    tmp.rotate(90, QVector3D(1,0,0));
+
+    // Init vectors
+    QVector3D identity_matrix_center = QVector3D(0,0,1);
+    QVector3D south_pole = QVector3D(0,1,0);
+    QVector3D target = m_transformMatrix.row(2).toVector3D();
+    QVector3D target_projected = target;
+    target_projected.setY(0); // project to the equator
+    target_projected.normalize();
+
+    // Rotate around the south pole
+    qreal angle = qAcos(qMin(1.0f, QVector3D::dotProduct(identity_matrix_center, target_projected)));
+    QVector3D rotAxis = QVector3D::crossProduct(identity_matrix_center, target_projected);
+    tmp.rotate(-qRadiansToDegrees(angle), rotAxis);
+
+    // Look up at right angle
+    angle = qAcos(qMin(1.0f, QVector3D::dotProduct(south_pole, target)));
+    rotAxis = QVector3D::crossProduct(south_pole, target);
+    tmp.rotate(-qRadiansToDegrees(angle), rotAxis);
+
+    // Assign Matrix
+    m_transformMatrix = tmp;
+}
 
 void PhotoSphereRenderer::paint()
 {
@@ -224,7 +251,9 @@ void PhotoSphereRenderer::paint()
         }
 
         // transform needs to be an exact QMatrix3x3. A QMatrix4x4 won't work
-        m_program->setUniformValue("transform", m_transformMatrix.toGenericMatrix<3, 3>());
+        QMatrix4x4 mat2 = m_transformMatrix;
+        mat2.rotate(-90, QVector3D(1,0,0));
+        m_program->setUniformValue("transform", mat2.toGenericMatrix<3, 3>());
 
         // force cast to float is needed for the GLSL shaders
         m_program->setUniformValue("aspect", (float) m_viewportSize.height() / m_viewportSize.width());
